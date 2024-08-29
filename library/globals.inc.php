@@ -123,7 +123,8 @@ $USER_SPECIFIC_TABS = array('Appearance',
     'Report',
     'Calendar',
     'CDR',
-    'Connectors');
+    'Connectors',
+    'Questionnaires');
 $USER_SPECIFIC_GLOBALS = array('default_top_pane',
     'default_second_tab',
     'theme_tabs_layout',
@@ -156,7 +157,10 @@ $USER_SPECIFIC_GLOBALS = array('default_top_pane',
     'checkout_roll_off',
     'patient_birthday_alert',
     'patient_birthday_alert_manual_off',
-    'erx_import_status_message'
+    'erx_import_status_message',
+    'questionnaire_display_LOINCnote',
+    'questionnaire_display_style',
+    'questionnaire_display_fullscreen'
 );
 
 // Gets array of time zones supported by PHP.
@@ -440,7 +444,6 @@ $GLOBALS_METADATA = array(
             ,FormActionBarSettings::getDefaultSetting() // default = top of the form
             ,xl('Placement of the save/cancel, and other bottons where supported (Demographics, Encounter Forms, etc).')
         ),
-
     ),
 
     'Branding' => [
@@ -3125,9 +3128,16 @@ $GLOBALS_METADATA = array(
             xl('Use servers protocol and host in urls (portal internal only).')
         ),
 
+        'use_email_for_portal_username' => array(
+            xl('Use Patients on-record E-Mail for new Portal Login Username'),
+            'bool',
+            '1',
+            xl('Use contact email when creating portal credentials.')
+        ),
+
         'enforce_signin_email' => array(
-            xl('Enforce E-Mail in Portal Log On Dialog'),
-            'bool',                           // data type
+            xl('Require Patients to enter their on-record email for Portal Login'),
+            'bool',
             '1',
             xl('Patient is required to enter their contact e-mail if present in Demographics Contact.')
         ),
@@ -3160,6 +3170,13 @@ $GLOBALS_METADATA = array(
             xl('Enable Patient Portal new patient to self register.')
         ),
 
+        'portal_two_pass_reset' => array(
+            xl('Allow Patients to Reset Credentials') . ' ' . xl('This requires reCAPTCHA to be setup'),
+            'bool',                           // data type
+            '0',
+            xl('Patient may change their logon from portal login dialog.')
+        ),
+
         'allow_portal_appointments' => array(
             xl('Allow Online Appointments'),
             'bool',                           // data type
@@ -3167,15 +3184,15 @@ $GLOBALS_METADATA = array(
             xl('Allow Patient to make and view appointments online.')
         ),
 
-        'allow_portal_chat' => array(
-            xl('Allow Online Secure Chat'),
+        'allow_custom_report' => array(
+            xl('Allow Online Custom Content Report'),
             'bool',                           // data type
             '1',
-            xl('Allow Patient to use Secure Chat Application.')
+            xl('Allow Patient to use Custom Content Report.')
         ),
 
         'portal_two_ledger' => array(
-            xl('Allow Patient Ledger'),
+            xl('Allow Patient Billing Summary Report Online'),
             'bool',                           // data type
             '1',
             xl('Allow Patient to view their accounting ledger online.')
@@ -3188,18 +3205,25 @@ $GLOBALS_METADATA = array(
             xl('Allow Patient to make payments online.')
         ),
 
-        'portal_two_pass_reset' => array(
-            xl('Allow Patients to Reset Credentials') . ' ' . xl('This requires reCAPTCHA to be setup'),
-            'bool',                           // data type
-            '0',
-            xl('Patient may change their logon from portal login dialog.')
-        ),
-
         'portal_onsite_document_download' => array(
             xl('Enable Patient Portal Document Download'),
             'bool',                           // data type
             '1',
             xl('Enables the ability to download documents in the Patient Portal by the user.')
+        ),
+
+        'allow_portal_uploads' => array(
+            xl('Allow Patient Uploads from Portal Documents'),
+            'bool',
+            '1',
+            xl('Enables the ability for patient to upload documents to Documents Onsite Patient category.')
+        ),
+
+        'show_insurance_in_profile' => array(
+            xl('Allow Insurances in Patient Profile'),
+            'bool',
+            '1',
+            xl('UnCheck to not show insurances in Profile.')
         ),
     ),
 
@@ -4334,7 +4358,41 @@ $GLOBALS_METADATA = array(
             xl('Display the Ordering Provider option on Encounters'),
         ],
     ],
+
+    'Questionnaires' => [
+        'questionnaire_display_LOINCnote' => array(
+            xl('Display LOINC note on questionnaires'),
+            array(
+                '0' => xl('At the top of the page only'),
+                '1' => xl('At the foot of the page only'),
+                '2' => xl('At the top of the page and at the foot of the page'),
+                '3' => xl('Do not display the note')
+            ),
+            '0' ,                          // default = display at top of form
+            xl('Configure where LOINC statement should be displayed')
+        ),
+
+        'questionnaire_display_style' => array(
+            xl('Questionnaire Form Display Style'),
+            array(
+                '0' => xl('OpenEMR Auto Select Dark/Light Themed Version'),
+                '1' => xl('LForms Project Maintained Light Version(Original)'),
+                '3' => xl('OpenEMR Light Theme Version Always'),
+                '4' => xl('OpenEMR Dark Theme Version Always'),
+            ),
+            '0' ,                          // default = display at top of form
+            xl('Choose OpenEMR auto select based on core theme styles(OpenEMR dark theme turns on Questionnaire dark, LForms project maintained light styles(Original) or default to always dark or light regardless of core themes.')
+        ),
+
+        'questionnaire_display_fullscreen' => array(
+            xl('Turn off full screen display for Questionnaire Forms'),
+            'bool',                           // data type
+            '0',                              // default = false
+            xl('Default form width of Questionnaire display.')
+        ),
+    ],
 );
+
 
 if (!empty($GLOBALS['ippf_specific'])) {
     $GLOBALS['GLOBALS_METADATA']['IPPF Menu'] = array(
